@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine?</title>
+    <style>
+        :root {
+            --pink: #ff4d6d;
+            --dark-pink: #c9184a;
+            --light-pink: #ffb3c1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff0f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        #bear-container {
+            font-size: 80px;
+            margin-bottom: -20px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: var(--dark-pink);
+            font-size: 1.8rem;
+            margin-top: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        #yesBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #noBtn {
+            background-color: var(--pink);
+            color: white;
+            position: relative;
+        }
+
+        /* Planning Section */
+        #planning-section {
+            display: none;
+        }
+
+        .date-box {
+            background: #fff5f7;
+            border: 2px dashed var(--pink);
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            border: 1px solid var(--light-pink);
+            border-radius: 5px;
+            margin-top: 5px;
+            resize: none;
+        }
+
+        #saveBtn {
+            background: var(--dark-pink);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainCard">
+        <div id="bear-container">🧸</div>
+        <h1 id="question">Will you be my Valentine?</h1>
+        
+        <div id="interactive-area">
+            <div class="buttons">
+                <button id="yesBtn" onclick="celebrate()">Yes!</button>
+                <button id="noBtn" onclick="handleNo()">No</button>
+            </div>
+        </div>
+
+        <div id="planning-section">
+            <h2 style="color: var(--dark-pink)">Yay! ❤️</h2>
+            <p>Congratulations, you're my Valentine now! Now, make a plan for our dates:</p>
+            
+            <div class="date-box">
+                <strong>Feb 20th</strong>
+                <textarea id="event20" rows="2" placeholder="What should we do?"></textarea>
+            </div>
+            
+            <div class="date-box">
+                <strong>Feb 21st</strong>
+                <textarea id="event21" rows="2" placeholder="And for today?"></textarea>
+            </div>
+
+            <button id="saveBtn" onclick="savePlans()">Save Our Plans</button>
+            <p id="saveMsg" style="color: green; display: none;">Plans saved in your heart (and browser)!</p>
+        </div>
+    </div>
+
+    <script>
+        let noCount = 0;
+        const bear = document.getElementById('bear-container');
+        const question = document.getElementById('question');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const planningSection = document.getElementById('planning-section');
+        const interactiveArea = document.getElementById('interactive-area');
+
+        const phrases = [
+            "No",
+            "Are you sure?",
+            "Really sure??",
+            "Think again!",
+            "Last chance!",
+            "Surely not?",
+            "You might regret this!",
+            "Give it another thought!",
+            "Are you absolutely sure?",
+            "This could be a mistake!",
+            "Have a heart!",
+            "Don't be so cold!",
+            "Change of heart?",
+            "Wouldn't you reconsider?",
+            "Is that your final answer?",
+            "You're breaking my heart ;("
+        ];
+
+        function handleNo() {
+            noCount++;
+            
+            // Change Bear to Crying
+            bear.innerHTML = "😭";
+            
+            // Change Question
+            question.innerHTML = "Pls be my Valentine... 🥺";
+            
+            // Make Yes button bigger
+            const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+            yesBtn.style.fontSize = (currentSize + 10) + "px";
+            yesBtn.style.padding = (currentSize + 5) + "px " + (currentSize * 2) + "px";
+            
+            // Change No button text
+            noBtn.innerHTML = phrases[Math.min(noCount, phrases.length - 1)];
+
+            // Move No button randomly to make it hard to click
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth) - (window.innerWidth/2);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight) - (window.innerHeight/2);
+            // After a few clicks, it starts jumping
+            if(noCount > 2) {
+                noBtn.style.position = "absolute";
+                noBtn.style.left = Math.random() * 80 + "%";
+                noBtn.style.top = Math.random() * 80 + "%";
+            }
+        }
+
+        function celebrate() {
+            bear.innerHTML = "🥰";
+            question.classList.add('hidden');
+            interactiveArea.classList.add('hidden');
+            planningSection.style.display = "block";
+            
+            // Clean up the absolute position of the no button if it moved
+            noBtn.style.display = "none";
+        }
+
+        function savePlans() {
+            const plan20 = document.getElementById('event20').value;
+            const plan21 = document.getElementById('event21').value;
+            
+            // Save to local storage so it stays there if they refresh
+            localStorage.setItem('valentinePlan20', plan20);
+            localStorage.setItem('valentinePlan21', plan21);
+            
+            document.getElementById('saveMsg').style.display = "block";
+            document.getElementById('saveBtn').innerHTML = "Plans Locked In! 🔒";
+        }
+    </script>
+</body>
+</html>
